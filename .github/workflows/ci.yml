@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint and format check
+        run: |
+          black --check src/ tests/ scripts/ main.py
+          ruff check src/ tests/ scripts/ main.py
+
+      - name: Type check
+        run: mypy src/ scripts/ main.py --ignore-missing-imports
+
+      - name: Run tests
+        run: python -m pytest tests/ -v

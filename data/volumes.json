@@ -1,0 +1,26 @@
+[
+  {
+    "volume": "Orach Chaim",
+    "volume_he": "אורח חיים",
+    "ref_base": "Shulchan_Arukh,_Orach_Chaim",
+    "max_siman": 697
+  },
+  {
+    "volume": "Yoreh De'ah",
+    "volume_he": "יורה דעה",
+    "ref_base": "Shulchan_Arukh,_Yoreh_De'ah",
+    "max_siman": 403
+  },
+  {
+    "volume": "Even HaEzer",
+    "volume_he": "אבן העזר",
+    "ref_base": "Shulchan_Arukh,_Even_HaEzer",
+    "max_siman": 178
+  },
+  {
+    "volume": "Choshen Mishpat",
+    "volume_he": "חושן משפט",
+    "ref_base": "Shulchan_Arukh,_Choshen_Mishpat",
+    "max_siman": 427
+  }
+]

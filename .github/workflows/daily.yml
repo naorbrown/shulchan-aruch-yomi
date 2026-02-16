@@ -1,0 +1,56 @@
+name: Daily Halachot
+
+on:
+  schedule:
+    # Run at BOTH possible 3am Israel times to handle DST.
+    # The Python script checks actual Israel time and only broadcasts at 3am.
+    - cron: '0 0 * * *'   # Summer (IDT, UTC+3): 3am Israel = 0am UTC
+    - cron: '0 1 * * *'   # Winter (IST, UTC+2): 3am Israel = 1am UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  broadcast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install ffmpeg (for TTS audio)
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Send daily halachot
+        run: python main.py
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          TORAH_YOMI_CHANNEL_ID: ${{ secrets.TORAH_YOMI_CHANNEL_ID }}
+          TORAH_YOMI_CHANNEL_BOT_TOKEN: ${{ secrets.TORAH_YOMI_CHANNEL_BOT_TOKEN }}
+          TORAH_YOMI_PUBLISH_ENABLED: ${{ secrets.TORAH_YOMI_PUBLISH_ENABLED }}
+          GOOGLE_TTS_ENABLED: ${{ secrets.GOOGLE_TTS_ENABLED }}
+          GOOGLE_TTS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_TTS_CREDENTIALS_JSON }}
+
+      - name: Commit cache and state
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add data/cache/ .github/state/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: update cache and state [skip ci]"
+          git pull --rebase origin main
+          git push
