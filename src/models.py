@@ -9,7 +9,7 @@ class Volume:
 
     volume: str  # English name: Orach Chaim, Yoreh De'ah, etc.
     volume_he: str  # Hebrew name
-    ref_base: str  # Sefaria reference base (e.g. Shulchan_Arukh,_Orach_Chaim)
+    ref_base: str  # Sefaria reference base (e.g. Shulchan_Arukh,_Orach_Chayim)
     max_siman: int  # Highest siman number in this volume
 
 

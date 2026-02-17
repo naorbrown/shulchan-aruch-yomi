@@ -28,7 +28,7 @@ def mock_client():
         Volume(
             volume="Orach Chaim",
             volume_he="אורח חיים",
-            ref_base="Shulchan_Arukh,_Orach_Chaim",
+            ref_base="Shulchan_Arukh,_Orach_Chayim",
             max_siman=697,
         ),
         Volume(

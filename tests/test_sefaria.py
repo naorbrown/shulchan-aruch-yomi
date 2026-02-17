@@ -17,7 +17,7 @@ def sample_volume():
     return Volume(
         volume="Orach Chaim",
         volume_he="אורח חיים",
-        ref_base="Shulchan_Arukh,_Orach_Chaim",
+        ref_base="Shulchan_Arukh,_Orach_Chayim",
         max_siman=697,
     )
 
@@ -50,7 +50,7 @@ def test_clean_text(client):
 def test_get_text_success(client):
     responses.add(
         responses.GET,
-        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chaim.1.1?context=0",
+        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.1.1?context=0",
         json={
             "he": "יתגבר כארי",
             "text": "One should strengthen",
@@ -58,7 +58,7 @@ def test_get_text_success(client):
         },
         status=200,
     )
-    result = client.get_text("Shulchan_Arukh,_Orach_Chaim.1.1")
+    result = client.get_text("Shulchan_Arukh,_Orach_Chayim.1.1")
     assert result is not None
     assert result["he"] == "יתגבר כארי"
 
@@ -78,7 +78,7 @@ def test_get_text_failure(client):
 def test_fetch_halacha(client, sample_volume):
     responses.add(
         responses.GET,
-        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chaim.1.1?context=0",
+        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.1.1?context=0",
         json={
             "he": "יתגבר כארי לעמוד בבוקר לעבודת בוראו שיהא הוא מעורר השחר.",
             "text": "",
@@ -96,7 +96,7 @@ def test_fetch_halacha(client, sample_volume):
 def test_fetch_halacha_no_text(client, sample_volume):
     responses.add(
         responses.GET,
-        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chaim.1.1?context=0",
+        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.1.1?context=0",
         json={"he": "", "text": ""},
         status=200,
     )
@@ -109,7 +109,7 @@ def test_fetch_halacha_html_list(client, sample_volume):
     """Handle case where API returns list of segments."""
     responses.add(
         responses.GET,
-        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chaim.5.3?context=0",
+        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.5.3?context=0",
         json={
             "he": ["<b>חלק</b> ראשון", "חלק שני של ההלכה"],
             "text": "",

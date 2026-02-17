@@ -46,7 +46,7 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add data/cache/ .github/state/
+          git add data/cache/ .github/state/ || true
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
