@@ -6,8 +6,15 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,13 +25,48 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Install dev tools
+        run: pip install black ruff
 
-      - name: Lint and format check
+      - name: Auto-fix formatting (push to main only)
+        if: github.event_name == 'push'
+        run: |
+          black src/ tests/ scripts/ main.py
+          ruff check --fix src/ tests/ scripts/ main.py
+
+          if git diff --quiet; then
+            echo "No formatting changes needed"
+          else
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git add -A
+            git commit -m "style: auto-format code [skip ci]"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Check formatting (PRs only)
+        if: github.event_name == 'pull_request'
         run: |
           black --check src/ tests/ scripts/ main.py
           ruff check src/ tests/ scripts/ main.py
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Type check
         run: mypy src/ scripts/ main.py --ignore-missing-imports
