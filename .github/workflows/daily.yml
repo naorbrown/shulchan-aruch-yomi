@@ -29,7 +29,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Install ffmpeg (for TTS audio)
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v3
 
       - name: Send daily halachot
         run: python main.py ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
