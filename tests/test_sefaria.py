@@ -106,7 +106,7 @@ def test_fetch_full_siman_single_seif(client, sample_volume):
         responses.GET,
         "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.148?context=0",
         json={
-            "he": ["שלא יפשיט ש\"צ התיבה בצבו' כל זמן שהם בב\"ה."],
+            "he": ['שלא יפשיט ש"צ התיבה בצבו\' כל זמן שהם בב"ה.'],
             "text": "",
         },
         status=200,

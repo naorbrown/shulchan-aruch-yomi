@@ -39,7 +39,9 @@ def test_halacha_reference_with_seif():
         ref_base="Shulchan_Arukh,_Orach_Chayim",
         max_siman=697,
     )
-    h = Halacha(volume=vol, siman=1, seif=3, hebrew_text="test text here.", sefaria_url="")
+    h = Halacha(
+        volume=vol, siman=1, seif=3, hebrew_text="test text here.", sefaria_url=""
+    )
     assert h.reference == "Shulchan_Arukh,_Orach_Chayim.1.3"
 
 
