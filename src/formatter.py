@@ -40,7 +40,10 @@ def format_halacha_messages(
     """Format a halacha into messages (Hebrew only)."""
     label = "א" if number == 1 else "ב"
     emoji = "📜" if number == 1 else "📖"
-    ref_display = f"סימן {halacha.siman} סעיף {halacha.seif}"
+    if halacha.seif is not None:
+        ref_display = f"סימן {halacha.siman} סעיף {halacha.seif}"
+    else:
+        ref_display = f"סימן {halacha.siman}"
     title = f'{emoji} <a href="{halacha.sefaria_url}"><b>{label}. {halacha.volume.volume_he} — {ref_display}</b></a>'
     link = f'<a href="{halacha.sefaria_url}">המשך בספריא →</a>'
 

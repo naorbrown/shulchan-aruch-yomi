@@ -15,25 +15,28 @@ class Volume:
 
 @dataclass(frozen=True)
 class Halacha:
-    """A single halacha (seif) from the Shulchan Aruch."""
+    """A full siman (chapter) from the Shulchan Aruch."""
 
     volume: Volume
     siman: int
-    seif: int
+    seif: int | None  # None = full siman, int = specific seif
     hebrew_text: str
     sefaria_url: str
 
     @property
     def reference(self) -> str:
         """Full Sefaria reference string."""
-        return f"{self.volume.ref_base}.{self.siman}.{self.seif}"
+        if self.seif is not None:
+            return f"{self.volume.ref_base}.{self.siman}.{self.seif}"
+        return f"{self.volume.ref_base}.{self.siman}"
 
     @property
     def hebrew_reference(self) -> str:
         """Hebrew reference for display."""
-        return (
-            f"שולחן ערוך, {self.volume.volume_he}, סימן {self.siman} סעיף {self.seif}"
-        )
+        base = f"שולחן ערוך, {self.volume.volume_he}, סימן {self.siman}"
+        if self.seif is not None:
+            return f"{base} סעיף {self.seif}"
+        return base
 
 
 @dataclass(frozen=True)

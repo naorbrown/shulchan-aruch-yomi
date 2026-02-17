@@ -84,47 +84,41 @@ class SefariaClient:
             logger.error(f"Failed to fetch {reference}: {e}")
             return None
 
-    def fetch_halacha(self, volume: Volume, siman: int, seif: int) -> Halacha | None:
-        """Fetch a specific halacha (seif) from Sefaria."""
-        reference = f"{volume.ref_base}.{siman}.{seif}"
+    def fetch_full_siman(self, volume: Volume, siman: int) -> Halacha | None:
+        """Fetch a complete siman (all seifim) from Sefaria."""
+        reference = f"{volume.ref_base}.{siman}"
         data = self.get_text(reference)
 
         if not data:
             return None
 
-        # Extract Hebrew text
-        hebrew = data.get("he", "")
-        if isinstance(hebrew, list):
-            hebrew = " ".join(str(p) for p in hebrew if p)
+        # Extract Hebrew text — full siman returns a list of seifim
+        hebrew_raw = data.get("he", [])
+        if isinstance(hebrew_raw, str):
+            hebrew_raw = [hebrew_raw]
 
-        hebrew = self._clean_text(hebrew)
+        cleaned_seifim = [self._clean_text(s) for s in hebrew_raw if s]
+        cleaned_seifim = [s for s in cleaned_seifim if s]
 
-        if not hebrew or len(hebrew) < 10:
+        if not cleaned_seifim:
             logger.warning(f"No Hebrew text for {reference}")
             return None
 
-        # Build Sefaria URL
+        hebrew = "\n".join(cleaned_seifim)
+
+        if len(hebrew) < 10:
+            logger.warning(f"Hebrew text too short for {reference}")
+            return None
+
         sefaria_url = f"{self.WEB_URL}/{reference.replace(' ', '_')}"
 
         return Halacha(
             volume=volume,
             siman=siman,
-            seif=seif,
+            seif=None,
             hebrew_text=hebrew,
             sefaria_url=sefaria_url,
         )
-
-    def _get_seif_count(self, volume: Volume, siman: int) -> int | None:
-        """Fetch a full siman to discover how many seifim it has."""
-        reference = f"{volume.ref_base}.{siman}"
-        data = self.get_text(reference)
-        if not data:
-            return None
-
-        he = data.get("he", [])
-        if isinstance(he, list):
-            return len(he)
-        return None
 
     def _clean_text(self, text: str) -> str:
         """Clean HTML and normalize text."""
@@ -137,27 +131,15 @@ class SefariaClient:
     def get_random_halacha_from_volume(
         self, volume: Volume, rng: random.Random
     ) -> Halacha | None:
-        """Get a random halacha from a specific volume.
+        """Get a random full siman from a specific volume.
 
         Uses the provided RNG for deterministic selection.
-        Strategy: pick random siman, fetch it to find seif count, pick random seif.
+        Strategy: pick random siman, fetch all seifim.
         """
         for attempt in range(10):
             siman = rng.randint(1, volume.max_siman)
 
-            # Get seif count for this siman
-            seif_count = self._get_seif_count(volume, siman)
-            if seif_count and seif_count > 0:
-                seif = rng.randint(1, seif_count)
-                halacha = self.fetch_halacha(volume, siman, seif)
-                if halacha:
-                    logger.info(
-                        f"Found halacha: {halacha.reference} (attempt {attempt + 1})"
-                    )
-                    return halacha
-
-            # Fallback: try seif 1 directly
-            halacha = self.fetch_halacha(volume, siman, 1)
+            halacha = self.fetch_full_siman(volume, siman)
             if halacha:
                 logger.info(
                     f"Found halacha: {halacha.reference} (attempt {attempt + 1})"

@@ -35,7 +35,7 @@ def test_format_halacha_messages(sample_halacha_1):
     assert "16/02/2026" in msgs[0]
     assert "אורח חיים" in msgs[0]
     assert "סימן 1" in msgs[0]
-    assert "סעיף 1" in msgs[0]
+    assert "סעיף" not in msgs[0]
     assert "ספריא" in msgs[-1]
 
 

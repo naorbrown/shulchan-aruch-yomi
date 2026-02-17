@@ -29,25 +29,25 @@ def sample_volume_yd() -> Volume:
 
 @pytest.fixture
 def sample_halacha_1(sample_volume_oc: Volume) -> Halacha:
-    """Sample halacha from Orach Chaim."""
+    """Sample full siman from Orach Chaim."""
     return Halacha(
         volume=sample_volume_oc,
         siman=1,
-        seif=1,
+        seif=None,
         hebrew_text="יתגבר כארי לעמוד בבוקר לעבודת בוראו שיהא הוא מעורר השחר.",
-        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.1.1",
+        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.1",
     )
 
 
 @pytest.fixture
 def sample_halacha_2(sample_volume_yd: Volume) -> Halacha:
-    """Sample halacha from Yoreh De'ah."""
+    """Sample full siman from Yoreh De'ah."""
     return Halacha(
         volume=sample_volume_yd,
         siman=1,
-        seif=1,
+        seif=None,
         hebrew_text="אין שוחטין לא בתוך הנהר ולא על גבי כלים ולא לתוך כלים.",
-        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Yoreh_De'ah.1.1",
+        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Yoreh_De'ah.1",
     )
 
 

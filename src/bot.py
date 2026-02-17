@@ -270,7 +270,9 @@ class ShulchanAruchYomiBot:
             unified_msg += f"📅 {date.today().strftime('%d/%m/%Y')}\n\n"
 
             if pair.first:
-                ref = f"סימן {pair.first.siman} סעיף {pair.first.seif}"
+                ref = f"סימן {pair.first.siman}"
+                if pair.first.seif is not None:
+                    ref += f" סעיף {pair.first.seif}"
                 unified_msg += f"<b>א׳</b> {pair.first.volume.volume_he} — {ref}\n"
                 if pair.first.hebrew_text:
                     preview = pair.first.hebrew_text[:200]
@@ -279,7 +281,9 @@ class ShulchanAruchYomiBot:
                     unified_msg += f"{preview}\n\n"
 
             if pair.second:
-                ref = f"סימן {pair.second.siman} סעיף {pair.second.seif}"
+                ref = f"סימן {pair.second.siman}"
+                if pair.second.seif is not None:
+                    ref += f" סעיף {pair.second.seif}"
                 unified_msg += f"<b>ב׳</b> {pair.second.volume.volume_he} — {ref}\n"
                 if pair.second.hebrew_text:
                     preview = pair.second.hebrew_text[:200]

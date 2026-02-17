@@ -75,49 +75,73 @@ def test_get_text_failure(client):
 
 
 @responses.activate
-def test_fetch_halacha(client, sample_volume):
+def test_fetch_full_siman(client, sample_volume):
+    """Fetch a complete siman with multiple seifim."""
     responses.add(
         responses.GET,
-        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.1.1?context=0",
+        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.1?context=0",
         json={
-            "he": "יתגבר כארי לעמוד בבוקר לעבודת בוראו שיהא הוא מעורר השחר.",
+            "he": [
+                "יתגבר כארי לעמוד בבוקר לעבודת בוראו שיהא הוא מעורר השחר.",
+                "<b>ולא</b> יתבייש מפני המלעיגים עליו בעבודת השם יתברך.",
+            ],
             "text": "",
         },
         status=200,
     )
-    halacha = client.fetch_halacha(sample_volume, 1, 1)
+    halacha = client.fetch_full_siman(sample_volume, 1)
     assert halacha is not None
     assert halacha.siman == 1
-    assert halacha.seif == 1
+    assert halacha.seif is None
     assert "יתגבר" in halacha.hebrew_text
+    assert "יתבייש" in halacha.hebrew_text
+    assert "<b>" not in halacha.hebrew_text
+    assert "\n" in halacha.hebrew_text
 
 
 @responses.activate
-def test_fetch_halacha_no_text(client, sample_volume):
+def test_fetch_full_siman_single_seif(client, sample_volume):
+    """Fetch a siman that has only one seif."""
     responses.add(
         responses.GET,
-        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.1.1?context=0",
-        json={"he": "", "text": ""},
+        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.148?context=0",
+        json={
+            "he": ["שלא יפשיט ש\"צ התיבה בצבו' כל זמן שהם בב\"ה."],
+            "text": "",
+        },
         status=200,
     )
-    halacha = client.fetch_halacha(sample_volume, 1, 1)
+    halacha = client.fetch_full_siman(sample_volume, 148)
+    assert halacha is not None
+    assert halacha.siman == 148
+    assert halacha.seif is None
+    assert "יפשיט" in halacha.hebrew_text
+
+
+@responses.activate
+def test_fetch_full_siman_no_text(client, sample_volume):
+    responses.add(
+        responses.GET,
+        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.999?context=0",
+        json={"he": [], "text": ""},
+        status=200,
+    )
+    halacha = client.fetch_full_siman(sample_volume, 999)
     assert halacha is None
 
 
 @responses.activate
-def test_fetch_halacha_html_list(client, sample_volume):
-    """Handle case where API returns list of segments."""
+def test_fetch_full_siman_string_response(client, sample_volume):
+    """Handle case where API returns a string instead of list."""
     responses.add(
         responses.GET,
-        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.5.3?context=0",
+        "https://www.sefaria.org/api/texts/Shulchan_Arukh,_Orach_Chayim.50?context=0",
         json={
-            "he": ["<b>חלק</b> ראשון", "חלק שני של ההלכה"],
+            "he": "פסוק יחיד שהוא סימן שלם.",
             "text": "",
         },
         status=200,
     )
-    halacha = client.fetch_halacha(sample_volume, 5, 3)
+    halacha = client.fetch_full_siman(sample_volume, 50)
     assert halacha is not None
-    assert "חלק ראשון" in halacha.hebrew_text
-    assert "חלק שני" in halacha.hebrew_text
-    assert "<b>" not in halacha.hebrew_text
+    assert "פסוק יחיד" in halacha.hebrew_text

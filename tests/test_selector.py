@@ -109,9 +109,9 @@ def test_get_daily_pair_with_mock_api(selector, mock_client):
         return Halacha(
             volume=volume,
             siman=rng.randint(1, 10),
-            seif=1,
+            seif=None,
             hebrew_text="יתגבר כארי לעמוד בבוקר לעבודת בוראו שיהא הוא מעורר השחר.",
-            sefaria_url=f"https://www.sefaria.org/{volume.ref_base}.1.1",
+            sefaria_url=f"https://www.sefaria.org/{volume.ref_base}.1",
         )
 
     mock_client.get_random_halacha_from_volume.side_effect = mock_random

@@ -28,16 +28,16 @@ def _make_pair() -> DailyPair:
     h1 = Halacha(
         volume=oc,
         siman=1,
-        seif=1,
+        seif=None,
         hebrew_text="יתגבר כארי לעמוד בבוקר לעבודת בוראו שיהא הוא מעורר השחר.",
-        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.1.1",
+        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.1",
     )
     h2 = Halacha(
         volume=yd,
         siman=1,
-        seif=1,
+        seif=None,
         hebrew_text="אין שוחטין לא בתוך הנהר ולא על גבי כלים.",
-        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Yoreh_De'ah.1.1",
+        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Yoreh_De'ah.1",
     )
     return DailyPair(first=h1, second=h2, date_seed="2026-02-16")
 

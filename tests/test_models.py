@@ -28,8 +28,19 @@ def test_volume_frozen():
         vol.volume = "Other"  # type: ignore[misc]
 
 
-def test_halacha_reference(sample_halacha_1):
-    assert sample_halacha_1.reference == "Shulchan_Arukh,_Orach_Chayim.1.1"
+def test_halacha_reference_full_siman(sample_halacha_1):
+    assert sample_halacha_1.reference == "Shulchan_Arukh,_Orach_Chayim.1"
+
+
+def test_halacha_reference_with_seif():
+    vol = Volume(
+        volume="Orach Chaim",
+        volume_he="אורח חיים",
+        ref_base="Shulchan_Arukh,_Orach_Chayim",
+        max_siman=697,
+    )
+    h = Halacha(volume=vol, siman=1, seif=3, hebrew_text="test text here.", sefaria_url="")
+    assert h.reference == "Shulchan_Arukh,_Orach_Chayim.1.3"
 
 
 def test_halacha_hebrew_reference(sample_halacha_1):
@@ -37,7 +48,7 @@ def test_halacha_hebrew_reference(sample_halacha_1):
     assert "שולחן ערוך" in ref
     assert "אורח חיים" in ref
     assert "סימן 1" in ref
-    assert "סעיף 1" in ref
+    assert "סעיף" not in ref
 
 
 def test_daily_pair_validates_different_volumes(sample_halacha_1, sample_volume_oc):
@@ -45,7 +56,7 @@ def test_daily_pair_validates_different_volumes(sample_halacha_1, sample_volume_
     same_vol_halacha = Halacha(
         volume=sample_volume_oc,
         siman=2,
-        seif=1,
+        seif=None,
         hebrew_text="Test text here for validation.",
         sefaria_url="https://www.sefaria.org/test",
     )

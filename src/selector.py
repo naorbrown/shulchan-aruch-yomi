@@ -156,7 +156,7 @@ class HalachaSelector:
         return Halacha(
             volume=volume,
             siman=siman,
-            seif=1,
+            seif=None,
             hebrew_text="לא ניתן לטעון את הטקסט כרגע. לחץ על הקישור לקריאה בספריא.",
             sefaria_url=f"https://www.sefaria.org/{volume.ref_base.replace(' ', '_')}.{siman}",
         )
