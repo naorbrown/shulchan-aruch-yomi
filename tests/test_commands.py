@@ -16,7 +16,7 @@ def _make_pair() -> DailyPair:
     oc = Volume(
         volume="Orach Chaim",
         volume_he="אורח חיים",
-        ref_base="Shulchan_Arukh,_Orach_Chaim",
+        ref_base="Shulchan_Arukh,_Orach_Chayim",
         max_siman=697,
     )
     yd = Volume(
@@ -30,7 +30,7 @@ def _make_pair() -> DailyPair:
         siman=1,
         seif=1,
         hebrew_text="יתגבר כארי לעמוד בבוקר לעבודת בוראו שיהא הוא מעורר השחר.",
-        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Orach_Chaim.1.1",
+        sefaria_url="https://www.sefaria.org/Shulchan_Arukh,_Orach_Chayim.1.1",
     )
     h2 = Halacha(
         volume=yd,

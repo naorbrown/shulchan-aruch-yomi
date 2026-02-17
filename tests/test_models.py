@@ -9,7 +9,7 @@ def test_volume_creation():
     vol = Volume(
         volume="Orach Chaim",
         volume_he="אורח חיים",
-        ref_base="Shulchan_Arukh,_Orach_Chaim",
+        ref_base="Shulchan_Arukh,_Orach_Chayim",
         max_siman=697,
     )
     assert vol.volume == "Orach Chaim"
@@ -21,7 +21,7 @@ def test_volume_frozen():
     vol = Volume(
         volume="Orach Chaim",
         volume_he="אורח חיים",
-        ref_base="Shulchan_Arukh,_Orach_Chaim",
+        ref_base="Shulchan_Arukh,_Orach_Chayim",
         max_siman=697,
     )
     with pytest.raises(AttributeError):
@@ -29,7 +29,7 @@ def test_volume_frozen():
 
 
 def test_halacha_reference(sample_halacha_1):
-    assert sample_halacha_1.reference == "Shulchan_Arukh,_Orach_Chaim.1.1"
+    assert sample_halacha_1.reference == "Shulchan_Arukh,_Orach_Chayim.1.1"
 
 
 def test_halacha_hebrew_reference(sample_halacha_1):
