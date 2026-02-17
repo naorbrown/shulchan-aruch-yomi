@@ -61,6 +61,11 @@ Examples:
         type=str,
         help="Override date for preview (YYYY-MM-DD format)",
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Send broadcast regardless of time (for manual triggers)",
+    )
     return parser.parse_args()
 
 
@@ -136,7 +141,7 @@ def main() -> int:
         run_server(config)
         return 0
     else:
-        if not is_broadcast_hour():
+        if not args.force and not is_broadcast_hour():
             israel_now = datetime.now(ISRAEL_TZ)
             logger.info(
                 f"Skipping broadcast: Israel time is {israel_now.strftime('%H:%M')} "
