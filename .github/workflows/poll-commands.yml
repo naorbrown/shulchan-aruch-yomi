@@ -47,11 +47,18 @@ jobs:
           GOOGLE_TTS_ENABLED: ${{ secrets.GOOGLE_TTS_ENABLED }}
           GOOGLE_TTS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_TTS_CREDENTIALS_JSON }}
 
+      - name: Set up deploy key
+        if: success()
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
       - name: Commit state changes
         if: success()
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+          git remote set-url origin git@github.com:naorbrown/shulchan-aruch-yomi.git
           git add .github/state/
           if git diff --staged --quiet; then
             echo "No changes to commit"

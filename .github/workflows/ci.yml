@@ -28,6 +28,12 @@ jobs:
       - name: Install dev tools
         run: pip install black ruff
 
+      - name: Set up deploy key
+        if: github.event_name == 'push'
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
       - name: Auto-fix formatting (push to main only)
         if: github.event_name == 'push'
         run: |
@@ -39,6 +45,7 @@ jobs:
           else
             git config user.name github-actions
             git config user.email github-actions@github.com
+            git remote set-url origin git@github.com:naorbrown/shulchan-aruch-yomi.git
             git add -A
             git commit -m "style: auto-format code [skip ci]"
             git pull --rebase origin main

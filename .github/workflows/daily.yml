@@ -49,10 +49,16 @@ jobs:
           GOOGLE_TTS_ENABLED: ${{ secrets.GOOGLE_TTS_ENABLED }}
           GOOGLE_TTS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_TTS_CREDENTIALS_JSON }}
 
+      - name: Set up deploy key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
       - name: Commit cache and state
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+          git remote set-url origin git@github.com:naorbrown/shulchan-aruch-yomi.git
           git add data/cache/ .github/state/ || true
           if git diff --staged --quiet; then
             echo "No changes to commit"
