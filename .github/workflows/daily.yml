@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: daily-broadcast
+  cancel-in-progress: false
+
 jobs:
   broadcast:
     runs-on: ubuntu-latest
@@ -50,11 +54,13 @@ jobs:
           GOOGLE_TTS_CREDENTIALS_JSON: ${{ secrets.GOOGLE_TTS_CREDENTIALS_JSON }}
 
       - name: Set up deploy key
+        if: success()
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Commit cache and state
+        if: success()
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
@@ -65,5 +71,8 @@ jobs:
             exit 0
           fi
           git commit -m "chore: update cache and state [skip ci]"
-          git pull --rebase origin main
-          git push
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && break
+            echo "Push attempt $i failed, retrying in 5s..."
+            sleep 5
+          done
