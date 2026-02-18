@@ -31,6 +31,13 @@ jobs:
 
       - name: Install ffmpeg (for TTS audio)
         uses: FedericoCarboni/setup-ffmpeg@v3
+        continue-on-error: true
+
+      - name: Fallback ffmpeg install
+        run: |
+          if ! command -v ffmpeg &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y ffmpeg
+          fi
 
       - name: Poll and respond to commands
         run: python scripts/poll_commands.py
